@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Disponibilité de Gianni</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin:auto; }
+    input, button { margin: 5px; padding: 5px; font-size: 16px; }
+    #dashboard { display: none; margin-top: 20px; }
+    #status { font-size: 20px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Gestion de la disponibilité</h1>
+
+  <!-- Formulaire connexion -->
+  <div id="login">
+    <input id="username" placeholder="Nom d'utilisateur"><br>
+    <input id="password" type="password" placeholder="Mot de passe"><br>
+    <button id="loginBtn">Se connecter</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard">
+    <p>Bonjour <span id="userDisplay"></span> !</p>
+    <div id="status">Disponibilité de Gianni : <strong id="gianniStatus">…</strong></div>
+    <button id="toggleBtn">Changer disponibilité</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+    // 🔑 Remplace par ta config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpU7734RfZ0apwm5zOTTik1xs5KRZYplg",
+      authDomain: "zami-e32a7.firebaseapp.com",
+      projectId: "zami-e32a7",
+      storageBucket: "zami-e32a7.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:xxxxxxxxxx"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const loginDiv = document.getElementById("login");
+    const dashboard = document.getElementById("dashboard");
+    const userDisplay = document.getElementById("userDisplay");
+    const gianniStatus = document.getElementById("gianniStatus");
+    const toggleBtn = document.getElementById("toggleBtn");
+    const loginBtn = document.getElementById("loginBtn");
+
+    // 🔹 Comptes (mot de passe côté client)
+    const users = [
+      { username: "gianni", password: "1234" },
+      { username: "admin", password: "admin" }
+    ];
+
+    // 🔹 Vérifie session locale
+    const savedUser = localStorage.getItem("loggedInUser");
+    if(savedUser) showDashboard(savedUser);
+
+    // 🔹 Connexion
+    loginBtn.onclick = () => {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const user = users.find(u => u.username === username && u.password === password);
+      if(user) {
+        localStorage.setItem("loggedInUser", username);
+        showDashboard(username);
+      } else {
+        alert("Identifiants incorrects !");
+      }
+    };
+
+    // 🔹 Affiche dashboard
+    async function showDashboard(username) {
+      loginDiv.style.display = "none";
+      dashboard.style.display = "block";
+      userDisplay.textContent = username;
+      await loadGianniStatus();
+    }
+
+    // 🔹 Charge la disponibilité
+    async function loadGianniStatus() {
+      const docRef = doc(db, "availability", "Gianni");
+      const docSnap = await getDoc(docRef);
+      gianniStatus.textContent = docSnap.exists() ? docSnap.data().Gianni : "indisponible";
+    }
+
+    // 🔹 Change disponibilité
+    toggleBtn.onclick = async () => {
+      const docRef = doc(db, "availability", "Gianni");
+      const docSnap = await getDoc(docRef);
+      const current = docSnap.exists() ? docSnap.data().Gianni : "indisponible";
+      const newStatus = current === "disponible" ? "indisponible" : "disponible";
+      await updateDoc(docRef, { Gianni: newStatus });
+      gianniStatus.textContent = newStatus;
+    };
+  </script>
+</body>
+</html>
