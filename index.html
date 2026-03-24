@@ -2,29 +2,142 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Disponibilité de Gianni</title>
+  <title>Disponibilité de Gianni 📅</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin:auto; }
-    input, button { margin: 5px; padding: 5px; font-size: 16px; }
-    #dashboard { display: none; margin-top: 20px; }
-    #status { font-size: 20px; margin: 10px 0; }
+    /* 🌟 Décor en fond et police moderne */
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Superbe dégradé animé en fond */
+      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+      background-size: 200% 200%;
+      animation: gradientBG 10s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* 📦 Conteneur principal effet "Verre" (Glassmorphism) */
+    .container {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* 🎨 Style des champs et boutons */
+    input, select, button { 
+      width: 90%;
+      margin: 10px 0; 
+      padding: 12px; 
+      font-size: 16px; 
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #9face6;
+      box-shadow: 0 0 5px rgba(159, 172, 230, 0.5);
+    }
+
+    button {
+      background-color: #5b73e8;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.1s;
+    }
+
+    button:hover {
+      background-color: #4a62d1;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #logoutBtn {
+      background-color: #ff6b6b;
+      margin-top: 20px;
+    }
+
+    #logoutBtn:hover {
+      background-color: #e55a5a;
+    }
+
+    /* 📊 Sections */
+    #dashboard { display: none; }
+    
+    #status-box { 
+      background: #f8f9fa; 
+      padding: 15px; 
+      border-radius: 10px;
+      margin: 20px 0;
+      font-size: 18px;
+      border: 1px solid #e2e2e2;
+    }
+
+    #gianniStatus {
+      display: block;
+      font-size: 24px;
+      margin-top: 10px;
+    }
+
   </style>
 </head>
 <body>
-  <h1>Gestion de la disponibilité</h1>
 
-  <!-- Formulaire connexion -->
-  <div id="login">
-    <input id="username" placeholder="Nom d'utilisateur"><br>
-    <input id="password" type="password" placeholder="Mot de passe"><br>
-    <button id="loginBtn">Se connecter</button>
-  </div>
+  <div class="container">
+    <h1>👋 Gestion de la disponibilité</h1>
 
-  <!-- Dashboard -->
-  <div id="dashboard">
-    <p>Bonjour <span id="userDisplay"></span> !</p>
-    <div id="status">Disponibilité de Gianni : <strong id="gianniStatus">…</strong></div>
-    <button id="toggleBtn">Changer disponibilité</button>
+    <div id="login">
+      <p>Connectez-vous pour continuer</p>
+      <input id="username" placeholder="👤 Nom d'utilisateur"><br>
+      <input id="password" type="password" placeholder="🔑 Mot de passe"><br>
+      <button id="loginBtn">🚀 Se connecter</button>
+    </div>
+
+    <div id="dashboard">
+      <p>Bonjour <strong><span id="userDisplay"></span></strong> ! ✨</p>
+      
+      <div id="status-box">
+        Disponibilité actuelle : <strong id="gianniStatus">⏳ Chargement...</strong>
+      </div>
+
+      <label for="statusSelect"><strong>Changer le statut :</strong></label>
+      <select id="statusSelect">
+        <option value="disponible">🟢 Disponible</option>
+        <option value="indisponible">🔴 Indisponible</option>
+        <option value="occupe">🟡 Occupé</option>
+        <option value="pause">☕ En pause</option>
+        <option value="reunion">📅 En réunion</option>
+      </select>
+      
+      <button id="updateBtn">✅ Mettre à jour</button>
+      <button id="logoutBtn">🚪 Se déconnecter</button>
+    </div>
   </div>
 
   <script type="module">
@@ -48,10 +161,21 @@
     const dashboard = document.getElementById("dashboard");
     const userDisplay = document.getElementById("userDisplay");
     const gianniStatus = document.getElementById("gianniStatus");
-    const toggleBtn = document.getElementById("toggleBtn");
+    const statusSelect = document.getElementById("statusSelect");
+    const updateBtn = document.getElementById("updateBtn");
     const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    // 🔹 Comptes (mot de passe côté client)
+    // Dictionnaire des statuts pour l'affichage
+    const statusIcons = {
+      "disponible": "🟢 Disponible",
+      "indisponible": "🔴 Indisponible",
+      "occupe": "🟡 Occupé",
+      "pause": "☕ En pause",
+      "reunion": "📅 En réunion"
+    };
+
+    // 🔹 Comptes (mot de passe côté client - pour la démo)
     const users = [
       { username: "gianni", password: "1234" },
       { username: "admin", password: "admin" }
@@ -61,7 +185,7 @@
     const savedUser = localStorage.getItem("loggedInUser");
     if(savedUser) showDashboard(savedUser);
 
-    // Connexion
+    // 🚀 Connexion
     loginBtn.onclick = () => {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
@@ -70,11 +194,20 @@
         localStorage.setItem("loggedInUser", username);
         showDashboard(username);
       } else {
-        alert("Identifiants incorrects !");
+        alert("❌ Identifiants incorrects !");
       }
     };
 
-    // Affiche dashboard
+    // 🚪 Déconnexion
+    logoutBtn.onclick = () => {
+      localStorage.removeItem("loggedInUser");
+      loginDiv.style.display = "block";
+      dashboard.style.display = "none";
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+    };
+
+    // 🎛️ Affiche dashboard
     async function showDashboard(username) {
       loginDiv.style.display = "none";
       dashboard.style.display = "block";
@@ -82,27 +215,33 @@
       await loadGianniStatus();
     }
 
-    // Charge ou crée la disponibilité
+    // 📥 Charge ou crée la disponibilité
     async function loadGianniStatus() {
       const docRef = doc(db, "availability", "Gianni");
       const docSnap = await getDoc(docRef);
       if(docSnap.exists()) {
-        gianniStatus.textContent = docSnap.data().Gianni;
+        const currentStatus = docSnap.data().Gianni;
+        // Met à jour le texte avec l'emoji
+        gianniStatus.textContent = statusIcons[currentStatus] || currentStatus;
+        // Met à jour la valeur sélectionnée dans le menu déroulant
+        if(statusIcons[currentStatus]) statusSelect.value = currentStatus;
       } else {
-        // Si le document n'existe pas, on le crée automatiquement
         await setDoc(docRef, { Gianni: "disponible" });
-        gianniStatus.textContent = "disponible";
+        gianniStatus.textContent = statusIcons["disponible"];
+        statusSelect.value = "disponible";
       }
     }
 
-    // Change disponibilité (crée le doc si jamais absent)
-    toggleBtn.onclick = async () => {
+    // 📤 Change disponibilité avec le menu déroulant
+    updateBtn.onclick = async () => {
+      const newStatus = statusSelect.value;
       const docRef = doc(db, "availability", "Gianni");
-      const docSnap = await getDoc(docRef);
-      const current = docSnap.exists() ? docSnap.data().Gianni : "indisponible";
-      const newStatus = current === "disponible" ? "indisponible" : "disponible";
+      
+      updateBtn.textContent = "⏳ Mise à jour...";
       await setDoc(docRef, { Gianni: newStatus }, { merge: true });
-      gianniStatus.textContent = newStatus;
+      
+      gianniStatus.textContent = statusIcons[newStatus];
+      updateBtn.textContent = "✅ Mettre à jour";
     };
   </script>
 </body>
