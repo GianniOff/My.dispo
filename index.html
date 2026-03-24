@@ -2,165 +2,116 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Disponibilité de Gianni 📅</title>
+  <title>Gianni Connect 📅</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    /* 🌟 Décor en fond et police moderne */
+    :root {
+      --primary: #6366f1;
+      --bg-gradient: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+    }
+
     body { 
-      font-family: 'Poppins', sans-serif; 
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
-      background-size: 200% 200%;
-      animation: gradientBG 10s ease infinite;
+      font-family: 'Poppins', sans-serif; margin: 0; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-gradient);
     }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* 📦 Conteneur principal effet "Verre" */
     .container {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      padding: 40px 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      text-align: center;
-      width: 100%;
-      max-width: 400px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px; border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      text-align: center; width: 100%; max-width: 420px;
     }
 
-    h1 {
-      font-size: 22px;
-      color: #333;
-      margin-bottom: 20px;
+    /* Statuts en un clic */
+    .status-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;
     }
 
-    /* 🎨 Style des champs et boutons */
-    input[type="text"], input[type="password"], select, button { 
-      width: 90%;
-      margin: 10px 0; 
-      padding: 12px; 
-      font-size: 16px; 
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+    .status-btn {
+      padding: 12px; border-radius: 12px; border: 2px solid transparent;
+      background: #f3f4f6; cursor: pointer; font-weight: 600;
+      transition: all 0.2s; font-size: 14px;
     }
 
-    input:focus, select:focus {
-      outline: none;
-      border-color: #9face6;
-      box-shadow: 0 0 5px rgba(159, 172, 230, 0.5);
+    .status-btn:hover { background: #e5e7eb; transform: translateY(-2px); }
+    .status-btn.active { border-color: var(--primary); background: #e0e7ff; color: var(--primary); }
+
+    /* Inputs & Buttons */
+    input { 
+      width: 100%; margin: 8px 0; padding: 12px; border-radius: 12px;
+      border: 1px solid #ddd; box-sizing: border-box;
     }
 
-    /* Checkbox IP */
-    .checkbox-container {
-      text-align: left;
-      margin: 10px 5%;
-      font-size: 14px;
-      color: #555;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
+    .btn-main {
+      width: 100%; padding: 12px; border-radius: 12px; border: none;
+      background: var(--primary); color: white; font-weight: 600;
+      cursor: pointer; margin-top: 10px;
     }
+
+    .invitation-box {
+      margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;
+    }
+
+    #status-display {
+      font-size: 24px; font-weight: 800; margin: 15px 0; color: #1f2937;
+    }
+
+    .hidden { display: none; }
     
-    .checkbox-container input {
-      width: auto;
-      margin: 0;
-      cursor: pointer;
-    }
-
-    button {
-      background-color: #5b73e8;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.1s;
-    }
-
-    button:hover { background-color: #4a62d1; }
-    button:active { transform: scale(0.98); }
-
-    #logoutBtn { background-color: #ff6b6b; margin-top: 20px; }
-    #logoutBtn:hover { background-color: #e55a5a; }
-
-    /* 📊 Sections */
-    #dashboard { display: none; }
-    #loadingScreen { display: block; font-size: 18px; font-weight: bold; color: #333; }
-    #login { display: none; }
-    
-    #status-box { 
-      background: #f8f9fa; 
-      padding: 15px; 
-      border-radius: 10px;
-      margin: 20px 0;
-      font-size: 18px;
-      border: 1px solid #e2e2e2;
-    }
-
-    #gianniStatus {
-      display: block;
-      font-size: 24px;
-      margin-top: 10px;
+    .copy-link {
+      font-size: 11px; background: #f9fafb; padding: 8px;
+      border-radius: 8px; word-break: break-all; margin-top: 10px;
+      border: 1px dashed #ccc; cursor: pointer;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>👋 Gestion de la disponibilité</h1>
+    <h2 id="main-title">👋 Bienvenue</h2>
 
-    <div id="loadingScreen">
-      🔍 Vérification de la connexion...
+    <div id="section-loading">Vérification...</div>
+
+    <div id="section-login" class="hidden">
+      <input id="login-user" type="text" placeholder="👤 Nom d'utilisateur">
+      <input id="login-pass" type="password" placeholder="🔑 Mot de passe">
+      <button class="btn-main" id="btn-do-login">Se connecter</button>
     </div>
 
-    <div id="login">
-      <p>Connectez-vous pour continuer</p>
-      <input id="username" type="text" placeholder="👤 Nom d'utilisateur"><br>
-      <input id="password" type="password" placeholder="🔑 Mot de passe"><br>
-      
-      <label class="checkbox-container">
-        <input type="checkbox" id="rememberIp"> Mémoriser ma connexion via IP
-      </label>
-
-      <button id="loginBtn">🚀 Se connecter</button>
+    <div id="section-register" class="hidden">
+      <p>✨ Créer votre compte invité</p>
+      <input id="reg-user" type="text" placeholder="👤 Choisir un nom">
+      <input id="reg-pass" type="password" placeholder="🔑 Mot de passe">
+      <button class="btn-main" id="btn-do-register">Créer mon compte</button>
     </div>
 
-    <div id="dashboard">
-      <p>Bonjour <strong><span id="userDisplay"></span></strong> ! ✨</p>
-      
-      <div id="status-box">
-        Disponibilité : <strong id="gianniStatus">⏳ Chargement...</strong>
+    <div id="section-dash" class="hidden">
+      <p>Statut actuel :</p>
+      <div id="status-display">🟢 Disponible</div>
+
+      <div class="status-grid">
+        <div class="status-btn" onclick="updateStatus('disponible')">🟢 Dispo</div>
+        <div class="status-btn" onclick="updateStatus('occupe')">🟡 Occupé</div>
+        <div class="status-btn" onclick="updateStatus('reunion')">📅 Réunion</div>
+        <div class="status-btn" onclick="updateStatus('pause')">☕ Pause</div>
+        <div class="status-btn" onclick="updateStatus('indisponible')">🔴 Off</div>
       </div>
 
-      <label for="statusSelect"><strong>Changer le statut :</strong></label>
-      <select id="statusSelect">
-        <option value="disponible">🟢 Disponible</option>
-        <option value="indisponible">🔴 Indisponible</option>
-        <option value="occupe">🟡 Occupé</option>
-        <option value="pause">☕ En pause</option>
-        <option value="reunion">📅 En réunion</option>
-      </select>
-      
-      <button id="updateBtn">✅ Mettre à jour</button>
-      <button id="logoutBtn">🚪 Se déconnecter</button>
+      <div id="admin-zone" class="hidden invitation-box">
+        <p style="font-size: 13px; color: #666;">🛠️ Zone Admin</p>
+        <button class="btn-main" style="background:#10b981" id="btn-gen-link">Générer un lien d'invitation</button>
+        <div id="display-link" class="hidden copy-link"></div>
+      </div>
+
+      <button onclick="logout()" style="background:#ef4444; margin-top:30px" class="btn-main">Déconnexion</button>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-    // 🔑 Remplace par ta config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCpU7734RfZ0apwm5zOTTik1xs5KRZYplg",
       authDomain: "zami-e32a7.firebaseapp.com",
@@ -173,172 +124,127 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const loadingScreen = document.getElementById("loadingScreen");
-    const loginDiv = document.getElementById("login");
-    const dashboard = document.getElementById("dashboard");
-    const userDisplay = document.getElementById("userDisplay");
-    const gianniStatus = document.getElementById("gianniStatus");
-    const statusSelect = document.getElementById("statusSelect");
-    const updateBtn = document.getElementById("updateBtn");
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    const statusIcons = {
+    const statusMap = {
       "disponible": "🟢 Disponible",
-      "indisponible": "🔴 Indisponible",
       "occupe": "🟡 Occupé",
+      "reunion": "📅 En réunion",
       "pause": "☕ En pause",
-      "reunion": "📅 En réunion"
+      "indisponible": "🔴 Indisponible"
     };
 
-    let currentUser = null; // Stockera l'utilisateur connecté
-
-    // 🌐 Fonction pour récupérer l'IP publique de l'utilisateur
-    async function getCurrentIP() {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        return data.ip;
-      } catch (e) {
-        console.error("Impossible de récupérer l'IP", e);
-        return null;
-      }
-    }
-
-    // 🔄 Vérification initiale (Session locale ou IP)
-    async function checkAutoLogin() {
-      const savedUserLocal = localStorage.getItem("loggedInUser");
+    // --- LOGIQUE AU CHARGEMENT ---
+    window.onload = async () => {
+      const hash = window.location.hash.substring(1);
       
-      if(savedUserLocal) {
-        return showDashboard(savedUserLocal);
-      }
-
-      // Si pas de session locale, on vérifie l'IP dans Firebase
-      const currentIp = await getCurrentIP();
-      if(currentIp) {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("savedIp", "==", currentIp));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          // IP trouvée dans un document utilisateur ! Connexion auto.
-          const userDoc = querySnapshot.docs[0];
-          const username = userDoc.id;
-          localStorage.setItem("loggedInUser", username);
-          return showDashboard(username);
-        }
-      }
-
-      // Si aucune IP ne correspond, on affiche le formulaire de connexion
-      loadingScreen.style.display = "none";
-      loginDiv.style.display = "block";
-    }
-
-    // Lancer la vérification au chargement
-    checkAutoLogin();
-
-    // 🚀 Connexion manuelle (Vérification dans Firebase)
-    loginBtn.onclick = async () => {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const rememberIp = document.getElementById("rememberIp").checked;
-
-      if(!username || !password) return alert("❌ Veuillez remplir tous les champs.");
-
-      loginBtn.textContent = "⏳ Connexion...";
-      loginBtn.disabled = true;
-
-      try {
-        const userRef = doc(db, "users", username);
-        const userSnap = await getDoc(userRef);
-
-        if(userSnap.exists() && userSnap.data().password === password) {
-          localStorage.setItem("loggedInUser", username);
-          
-          // Si l'utilisateur veut mémoriser l'IP
-          if(rememberIp) {
-            const currentIp = await getCurrentIP();
-            if(currentIp) {
-              await updateDoc(userRef, { savedIp: currentIp });
-            }
-          }
-
-          showDashboard(username);
+      if (hash) {
+        // Mode création de compte via lien
+        const invRef = doc(db, "invitations", hash);
+        const invSnap = await getDoc(invRef);
+        
+        if (invSnap.exists()) {
+          showSection('section-register');
+          document.getElementById('main-title').innerText = "🎁 Invitation Valide";
         } else {
-          alert("❌ Nom d'utilisateur ou mot de passe incorrect !");
+          alert("Lien expiré ou invalide.");
+          window.location.hash = "";
+          location.reload();
         }
-      } catch (error) {
-        console.error(error);
-        alert("❌ Erreur de connexion au serveur.");
-      }
-
-      loginBtn.textContent = "🚀 Se connecter";
-      loginBtn.disabled = false;
-    };
-
-    // 🚪 Déconnexion
-    logoutBtn.onclick = async () => {
-      logoutBtn.textContent = "⏳ Déconnexion...";
-      
-      // On supprime l'IP enregistrée dans Firebase pour empêcher la reconnexion automatique
-      if(currentUser) {
-        try {
-          const userRef = doc(db, "users", currentUser);
-          await updateDoc(userRef, { savedIp: "" }); // Efface l'IP
-        } catch(e) { console.error("Erreur suppression IP", e); }
-      }
-
-      localStorage.removeItem("loggedInUser");
-      currentUser = null;
-      
-      document.getElementById("username").value = "";
-      document.getElementById("password").value = "";
-      document.getElementById("rememberIp").checked = false;
-
-      dashboard.style.display = "none";
-      loginDiv.style.display = "block";
-      logoutBtn.textContent = "🚪 Se déconnecter";
-    };
-
-    // 🎛️ Affiche dashboard
-    async function showDashboard(username) {
-      currentUser = username;
-      loadingScreen.style.display = "none";
-      loginDiv.style.display = "none";
-      dashboard.style.display = "block";
-      userDisplay.textContent = username;
-      await loadGianniStatus();
-    }
-
-    // 📥 Charge ou crée la disponibilité
-    async function loadGianniStatus() {
-      const docRef = doc(db, "availability", "Gianni");
-      const docSnap = await getDoc(docRef);
-      if(docSnap.exists()) {
-        const currentStatus = docSnap.data().Gianni;
-        gianniStatus.textContent = statusIcons[currentStatus] || currentStatus;
-        if(statusIcons[currentStatus]) statusSelect.value = currentStatus;
       } else {
-        await setDoc(docRef, { Gianni: "disponible" });
-        gianniStatus.textContent = statusIcons["disponible"];
-        statusSelect.value = "disponible";
+        checkAutoLogin();
       }
+    };
+
+    async function checkAutoLogin() {
+      const user = localStorage.getItem("user");
+      if (user) showDashboard(user);
+      else showSection('section-login');
     }
 
-    // 📤 Change disponibilité avec le menu déroulant
-    updateBtn.onclick = async () => {
-      const newStatus = statusSelect.value;
-      const docRef = doc(db, "availability", "Gianni");
-      
-      updateBtn.textContent = "⏳ Mise à jour...";
-      updateBtn.disabled = true;
+    // --- ACTIONS ---
 
-      await setDoc(docRef, { Gianni: newStatus }, { merge: true });
+    // Connexion
+    document.getElementById('btn-do-login').onclick = async () => {
+      const u = document.getElementById('login-user').value.toLowerCase();
+      const p = document.getElementById('login-pass').value;
+      const uDoc = await getDoc(doc(db, "users", u));
       
-      gianniStatus.textContent = statusIcons[newStatus];
-      updateBtn.textContent = "✅ Mettre à jour";
-      updateBtn.disabled = false;
+      if (uDoc.exists() && uDoc.data().password === p) {
+        localStorage.setItem("user", u);
+        showDashboard(u);
+      } else alert("Erreur identifiants");
     };
+
+    // Création de compte (via invitation)
+    document.getElementById('btn-do-register').onclick = async () => {
+      const hash = window.location.hash.substring(1);
+      const u = document.getElementById('reg-user').value.toLowerCase().trim();
+      const p = document.getElementById('reg-pass').value;
+
+      if (!u || p.length < 4) return alert("Infos invalides");
+
+      // 1. Créer user
+      await setDoc(doc(db, "users", u), { password: p, role: "guest" });
+      // 2. Supprimer l'invitation (Usage unique)
+      await deleteDoc(doc(db, "invitations", hash));
+      
+      alert("Compte créé ! Connectez-vous.");
+      window.location.hash = "";
+      location.reload();
+    };
+
+    // Mise à jour Statut (Un clic)
+    window.updateStatus = async (s) => {
+      await setDoc(doc(db, "availability", "Gianni"), { Gianni: s });
+      document.getElementById('status-display').innerText = statusMap[s];
+      refreshActiveBtn(s);
+    };
+
+    // Générer un lien d'invitation (Seul Gianni peut le voir)
+    document.getElementById('btn-gen-link').onclick = async () => {
+      const idUnique = Math.random().toString(36).substring(2, 15);
+      await setDoc(doc(db, "invitations", idUnique), { createdBy: "gianni" });
+      
+      const link = window.location.origin + window.location.pathname + "#" + idUnique;
+      const box = document.getElementById('display-link');
+      box.innerText = link;
+      box.classList.remove('hidden');
+      alert("Lien généré ! Cliquez sur le cadre gris pour copier.");
+    };
+
+    // --- UI HELPERS ---
+    function showSection(id) {
+      document.querySelectorAll('.container > div').forEach(d => d.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    async function showDashboard(user) {
+      showSection('section-dash');
+      document.getElementById('main-title').innerText = "Salut " + user;
+      if (user === "gianni") document.getElementById('admin-zone').classList.remove('hidden');
+      
+      const snap = await getDoc(doc(db, "availability", "Gianni"));
+      const current = snap.exists() ? snap.data().Gianni : "disponible";
+      document.getElementById('status-display').innerText = statusMap[current];
+      refreshActiveBtn(current);
+    }
+
+    function refreshActiveBtn(s) {
+      document.querySelectorAll('.status-btn').forEach(b => {
+        b.classList.remove('active');
+        if (b.innerText.toLowerCase().includes(s.substring(0,3))) b.classList.add('active');
+      });
+    }
+
+    window.logout = () => {
+      localStorage.removeItem("user");
+      location.reload();
+    };
+
+    document.getElementById('display-link').onclick = function() {
+      navigator.clipboard.writeText(this.innerText);
+      alert("Lien copié !");
+    };
+
   </script>
 </body>
 </html>
