@@ -29,7 +29,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
     // 🔑 Remplace par ta config Firebase
     const firebaseConfig = {
@@ -57,11 +57,11 @@
       { username: "admin", password: "admin" }
     ];
 
-    // 🔹 Vérifie session locale
+    // Vérifie session locale
     const savedUser = localStorage.getItem("loggedInUser");
     if(savedUser) showDashboard(savedUser);
 
-    // 🔹 Connexion
+    // Connexion
     loginBtn.onclick = () => {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
@@ -74,7 +74,7 @@
       }
     };
 
-    // 🔹 Affiche dashboard
+    // Affiche dashboard
     async function showDashboard(username) {
       loginDiv.style.display = "none";
       dashboard.style.display = "block";
@@ -82,20 +82,26 @@
       await loadGianniStatus();
     }
 
-    // 🔹 Charge la disponibilité
+    // Charge ou crée la disponibilité
     async function loadGianniStatus() {
       const docRef = doc(db, "availability", "Gianni");
       const docSnap = await getDoc(docRef);
-      gianniStatus.textContent = docSnap.exists() ? docSnap.data().Gianni : "indisponible";
+      if(docSnap.exists()) {
+        gianniStatus.textContent = docSnap.data().Gianni;
+      } else {
+        // Si le document n'existe pas, on le crée automatiquement
+        await setDoc(docRef, { Gianni: "disponible" });
+        gianniStatus.textContent = "disponible";
+      }
     }
 
-    // 🔹 Change disponibilité
+    // Change disponibilité (crée le doc si jamais absent)
     toggleBtn.onclick = async () => {
       const docRef = doc(db, "availability", "Gianni");
       const docSnap = await getDoc(docRef);
       const current = docSnap.exists() ? docSnap.data().Gianni : "indisponible";
       const newStatus = current === "disponible" ? "indisponible" : "disponible";
-      await updateDoc(docRef, { Gianni: newStatus });
+      await setDoc(docRef, { Gianni: newStatus }, { merge: true });
       gianniStatus.textContent = newStatus;
     };
   </script>
